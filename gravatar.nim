@@ -37,9 +37,26 @@ proc downloadGravatarImage*(hash : string, filename : string): string =
     # Download the image.
     downloadFile(url, filename)
     
-    return filename
+    return url
     
 
 proc getGravatarProfile*(user : string): string = #: TGravatarProfile = 
     ## Gets the specified user's profile.
 
+
+proc getGravatarQR*(user : string): string = 
+    ## Gets the image URL for the user's QR code.
+    
+    return "http://www.gravatar.com/" & user & ".qr"
+
+
+proc downloadGravatarQR*(user : string, filename : string): string = 
+    ## Downloads the user's QR code. Returns the remote URL.
+    
+    # Create the URL.
+    var url : string = "http://www.gravatar.com/" & user & ".qr"
+    
+    # Download the image.
+    downloadFile(url, filename)
+    
+    return url
