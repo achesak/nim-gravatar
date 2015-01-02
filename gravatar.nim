@@ -13,10 +13,10 @@ import md5
 
 
 # Define the types.
-type TGravatarPhoto* = tuple[value : string, photoType : string]
+type GravatarPhoto* = tuple[value : string, photoType : string]
 
-type TGravatarProfile* = tuple[id : string, hash : string, requestHash : string, profileUrl : string,
-                               preferredUsername : string, thumbnailUrl : string, photos : seq[TGravatarPhoto],
+type GravatarProfile* = tuple[id : string, hash : string, requestHash : string, profileUrl : string,
+                               preferredUsername : string, thumbnailUrl : string, photos : seq[GravatarPhoto],
                                profileColor : string, profilePosition : string, profileRepeat : string, 
                                profileBackground : string, givenName : string, familyName : string,
                                formattedName : string, displayName : string, aboutMe : string, location : string]
@@ -46,17 +46,17 @@ proc downloadGravatarImage*(hash : string, filename : string): string =
     return url
     
 
-proc getGravatarProfile*(user : string): TGravatarProfile = 
+proc getGravatarProfile*(user : string): GravatarProfile = 
     ## Gets the specified user's profile.
     
     # Get the data.
     var response : string = getContent("http://www.gravatar.com/" & user & ".xml")
     
     # Parse the data into XML.
-    var xml : PXmlNode = parseXML(newStringStream(response)).child("entry")
+    var xml : XmlNode = parseXML(newStringStream(response)).child("entry")
     
     # Create the return object.
-    var profile : TGravatarProfile
+    var profile : GravatarProfile
     
     # Populate the return object.
     profile.id = xml.child("id").innerText
@@ -67,16 +67,16 @@ proc getGravatarProfile*(user : string): TGravatarProfile =
     if xml.child("thumbnailUrl") != nil:
         profile.thumbnailUrl = xml.child("thumbnailUrl").innerText
     if xml.child("photos") != nil:
-        var photosXML : seq[PXmlNode] = xml.findall("photos")
-        var photos = newSeq[TGravatarPhoto](len(photosXML))
+        var photosXML : seq[XmlNode] = xml.findall("photos")
+        var photos = newSeq[GravatarPhoto](len(photosXML))
         for i in 0..high(photosXML):
-            var item : TGravatarPhoto
+            var item : GravatarPhoto
             item.value = photosXML[i].child("value").innerText
             if photosXML[i].child("type") != nil:
                 item.photoType = photosXML[i].child("type").innerText
             photos[i] = item
         profile.photos = photos
-    var bg : PXmlNode = xml.child("profileBackground")
+    var bg : XmlNode = xml.child("profileBackground")
     if bg.child("color") != nil:
         profile.profileColor = bg.child("color").innerText
     if bg.child("position") != nil:
@@ -85,7 +85,7 @@ proc getGravatarProfile*(user : string): TGravatarProfile =
         profile.profileRepeat = bg.child("repeat").innerText
     if bg.child("url") != nil:
         profile.profileBackground = bg.child("url").innerText
-    var name : PXmlNode = xml.child("name")
+    var name : XmlNode = xml.child("name")
     if name.child("givenName") != nil:
         profile.givenName = name.child("givenName").innerText
     if name.child("familyName") != nil:
