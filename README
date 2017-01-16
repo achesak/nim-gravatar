@@ -1,9 +1,0 @@
----- About ----
-
-nim-gravatar is a Nim wrapper for the Gravatar API.
-
-See the documentation.html file for documentation, and the offical documentation at https://en.gravatar.com/site/implement/ for more info on the API.
-
----- License ----
-
-nim-gravatar is released under the MIT open source license.
